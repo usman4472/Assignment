@@ -7,8 +7,8 @@ if(isset($_POST["import"]))
 	$dbname = $_POST['database_name'];
 	$username = $_POST['full_name'];
 	$email = $_POST['email'];
-
 	$con = mysqli_connect("localhost", "root", "");
+
 	// Check connection
 		if ($con->connect_error) {
 		    die("Connection failed: " . $con->connect_error);
@@ -27,8 +27,8 @@ if(isset($_POST["import"]))
 					if($extension == 'sql')
 					{
 
-					 mysqli_select_db ($con ,"assignment")or 
-					 die('Database Not Found');
+					 mysqli_select_db ($con, $dbname)or 
+					 die($dbname);
 
 						// Check connection
 						if (!$con) {
@@ -79,7 +79,7 @@ if(isset($_POST["import"]))
 								    $result->free();
 								}
 									$emailmessage = '<label class="text-success">Emailing Now.....</label>';
-									$resp=send_csv_mail($data, "Here is Today's Report:", $email);
+									 $resp=send_csv_mail($data, "Here is Today's Report:", $email);
 									 
 									if( $resp ){
 									$emailmessage = '<label class="text-success">Email sent</label>';
@@ -106,8 +106,9 @@ if(isset($_POST["import"]))
 		{
 		    echo "Error creating database: " . $con->error;
 		}
-}
 
+
+}
 
 function create_csv_string($data2) {
 
@@ -181,16 +182,21 @@ function send_csv_mail ($csvData, $body, $to,  $from = 'musman4472@gmail.com',$s
    <div><?php echo $emailmessage; ?></div>
    <form method="post" enctype="multipart/form-data">
    	<div class="form-group">
+   		<label>Your Full Name</label>
    	<input type="text" name="full_name" class="form-control" required placeholder="Enter Your Name">
    	</div>
    	<div class="form-group">
+   		<label>Your Email Address</label>
    	<input type="email" name="email" class="form-control" required placeholder="Enter Your Email Address">
    	</div>
    	<div class="form-group">
-   		<input type="text" name="database_name" class="form-control" required placeholder="Enter Your Database Name either it created or not">
+   		<label>Your Database Name  (only accept alphabet, numeric and underscore)</label>
+   		<input type="text" name="database_name" class="form-control" pattern="^[a-zA-Z0-9_.-]*$" required placeholder="Enter Your Database Name either it created or not">
    	</div>
-    <p><label>Select Sql File</label>
-    <input type="file" name="sqlfile" /></p>
+    <div class="form-group">
+    <label>Select Sql File</label>
+    <input type="file" name="sqlfile" />
+	</div>
     <br />
     <input type="submit" name="import" class="btn btn-info" value="Import" />
    </form>
